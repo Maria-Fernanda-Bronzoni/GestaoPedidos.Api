@@ -1,0 +1,94 @@
+[1mdiff --git a/GestaoPedidos.Api.csproj b/GestaoPedidos.Api.csproj[m
+[1mindex 49b4383..9a119be 100644[m
+[1m--- a/GestaoPedidos.Api.csproj[m
+[1m+++ b/GestaoPedidos.Api.csproj[m
+[36m@@ -1,9 +1,10 @@[m
+[31m-<Project Sdk="Microsoft.NET.Sdk.Web">[m
+[32m+[m[32m﻿<Project Sdk="Microsoft.NET.Sdk.Web">[m
+ [m
+   <PropertyGroup>[m
+     <TargetFramework>net8.0</TargetFramework>[m
+     <Nullable>enable</Nullable>[m
+     <ImplicitUsings>enable</ImplicitUsings>[m
+[32m+[m[32m    <UserSecretsId>9a2640cf-9847-4d1e-9e41-4b1f157a4fc3</UserSecretsId>[m
+   </PropertyGroup>[m
+ [m
+   <ItemGroup>[m
+[1mdiff --git a/Program.cs b/Program.cs[m
+[1mindex 4ccd28b..45e1646 100644[m
+[1m--- a/Program.cs[m
+[1m+++ b/Program.cs[m
+[36m@@ -1,11 +1,17 @@[m
+[32m+[m[32musing GestaoPedidos.Api.Data;[m
+[32m+[m[32musing Microsoft.EntityFrameworkCore;[m
+[32m+[m
+ var builder = WebApplication.CreateBuilder(args);[m
+ [m
+ // Add services to the container.[m
+[31m-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle[m
+ builder.Services.AddEndpointsApiExplorer();[m
+ builder.Services.AddSwaggerGen();[m
+ builder.Services.AddControllers();[m
+ [m
+[32m+[m[32mbuilder.Services.AddDbContext<GestaoPedidosDbContext>(options =>[m
+[32m+[m[32m    options.UseSqlServer([m
+[32m+[m[32m        builder.Configuration.GetConnectionString("GestaoPedidos")));[m
+[32m+[m
+ var app = builder.Build();[m
+ [m
+ // Configure the HTTP request pipeline.[m
+[36m@@ -16,16 +22,18 @@[m [mif (app.Environment.IsDevelopment())[m
+ }[m
+ [m
+ app.UseHttpsRedirection();[m
+[32m+[m
+ app.MapControllers();[m
+ [m
+ var summaries = new[][m
+ {[m
+[31m-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"[m
+[32m+[m[32m    "Freezing", "Bracing", "Chilly", "Cool", "Mild",[m
+[32m+[m[32m    "Warm", "Balmy", "Hot", "Sweltering", "Scorching"[m
+ };[m
+ [m
+ app.MapGet("/weatherforecast", () =>[m
+ {[m
+[31m-    var forecast =  Enumerable.Range(1, 5).Select(index =>[m
+[32m+[m[32m    var forecast = Enumerable.Range(1, 5).Select(index =>[m
+         new WeatherForecast[m
+         ([m
+             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),[m
+[36m@@ -33,6 +41,7 @@[m [mapp.MapGet("/weatherforecast", () =>[m
+             summaries[Random.Shared.Next(summaries.Length)][m
+         ))[m
+         .ToArray();[m
+[32m+[m
+     return forecast;[m
+ })[m
+ .WithName("GetWeatherForecast")[m
+[36m@@ -43,4 +52,4 @@[m [mapp.Run();[m
+ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)[m
+ {[m
+     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);[m
+[31m-}[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/appsettings.json b/appsettings.json[m
+[1mindex 10f68b8..9c43838 100644[m
+[1m--- a/appsettings.json[m
+[1m+++ b/appsettings.json[m
+[36m@@ -1,4 +1,7 @@[m
+ {[m
+[32m+[m[32m  "ConnectionStrings": {[m
+[32m+[m[32m    "GestaoPedidos": ""[m
+[32m+[m[32m  },[m
+   "Logging": {[m
+     "LogLevel": {[m
+       "Default": "Information",[m
+[36m@@ -6,4 +9,4 @@[m
+     }[m
+   },[m
+   "AllowedHosts": "*"[m
+[31m-}[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
