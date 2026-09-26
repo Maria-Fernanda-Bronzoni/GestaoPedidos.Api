@@ -14,8 +14,13 @@ public class GestaoPedidosDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Produto>()
-            .Property(p => p.Preco)
-            .HasPrecision(18, 2);
+        modelBuilder.Entity<Produto>(entity =>
+        {
+            entity.Property(p => p.Nome).IsRequired().HasMaxLength(150);
+
+            entity.Property(p => p.Preco).HasPrecision(18, 2);
+
+            entity.Property(p => p.QuantidadeEstoque).IsRequired();
+        });
     }
 }
